@@ -23,9 +23,9 @@ class createVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
         super.viewDidLoad()
 
         if chosenPainting != "" {
+            //Abfrage nach ausgewählten Bild in der Datenbank
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
             let context = appDelegate.persistentContainer.viewContext
-            
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Paintings")
             fetchRequest.predicate = NSPredicate(format: "name = %@", self.chosenPainting)
             fetchRequest.returnsObjectsAsFaults = false
@@ -56,6 +56,7 @@ class createVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
                 print("An error occoured")
             }
         }else{
+            //Wenn man einfach nur auf Add klickt sollen alle Werte leer sein
             imageView.image = UIImage(named: "tapme.png")
             nameText.text = ""
             yearText.text = ""
@@ -82,16 +83,14 @@ class createVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
 
     //Was soll passieren, wenn ein Photo ausgewählt wurde
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        
         imageView.image = info[UIImagePickerControllerEditedImage] as? UIImage
-        
         self.dismiss(animated: true, completion: nil)
     }
     
+    //Wenn auf den Speichern Button geklickt wwurde in Datenbank speichern
     @IBAction func saveButtonClicked(_ sender: Any) {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
-        
         let newArt = NSEntityDescription.insertNewObject(forEntityName: "Paintings", into: context)
         newArt.setValue(nameText.text, forKey: "name")
         newArt.setValue(artistText.text, forKey: "artist")
@@ -112,7 +111,7 @@ class createVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
             print("error")
         }
         
-        
+        //Und dann zurück auf den Hauptbildschrim wechseln
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "paintingCreated"), object: nil)
         _ = self.navigationController?.popViewController(animated: true)
     }

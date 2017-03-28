@@ -23,11 +23,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         super.viewDidLoad()
         
         
-        
         //setup table view
         tableView.dataSource = self
         tableView.delegate = self
         
+        
+        //Hole die Daten aus der Datenbank
         retrieveInfo()
     }
     
@@ -76,33 +77,40 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
 
 
-    @IBAction func addButtonClicked(_ sender: Any) {
-        self.selectedPainting = ""
-        performSegue(withIdentifier: "toCreateVC", sender: nil)
-    }
-
+    //Anzahl der Zeilen in der Tabelle
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return nameArray.count
     }
     
+    //Fülle die Tabelle mit den Werten aus der Datenbank
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         cell.textLabel?.text = nameArray[indexPath.row]
         return cell
     }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.selectedPainting = nameArray[indexPath.row]
-        performSegue(withIdentifier: "toCreateVC", sender: nil)
-    }
     
-    //Prepare Segue
+    //Prepare Segue - Übergebe Variablen
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toCreateVC"{
             let destinationVC =  segue.destination as! createVC
             destinationVC.chosenPainting =  selectedPainting
         }
     }
+    
+    //Perform Segue - Add Button
+    @IBAction func addButtonClicked(_ sender: Any) {
+        self.selectedPainting = ""
+        performSegue(withIdentifier: "toCreateVC", sender: nil)
+    }
+    
+    //Perform Segue - Bei Auswahl eines Elementes in der Liste
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.selectedPainting = nameArray[indexPath.row]
+        performSegue(withIdentifier: "toCreateVC", sender: nil)
+    }
+    
+    
     
 }
 
